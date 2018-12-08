@@ -11,9 +11,12 @@
 #define MOTOR_RIGHT_OFFSET 0
 
 #define PWM_DUTY_PERIOD 200
-//#define PWM_DUTY_CYCLE_SLOW
-//#define PWM_DUTY_CYCLE_NORM
-//#define PWM_DUTY_CYCLE_FAST
+
+#define PWM_DUTY_PERC_SLOW 20
+#define PWM_DUTY_PERC_NORM 40
+#define PWM_DUTY_PERC_QUICK 60
+#define PWM_DUTY_PERC_FAST  80
+#define PWM_DUTY_PERC_INSANE 100
 
 void setup_motors()
 {

@@ -1,7 +1,7 @@
 /*
- * WHEEL ENCODER PULSE COUNTER
- * AUTHOR: William Abrams
- * UNIVERSITY: CU Boulder
+ * USAGE: FOR TI-RSLK ROBOT
+ * AUTHORS: William Abrams, Darren Schultz
+ * UNIVERSITY: University of Colorado Boulder
  * COURSE: ECEN 2440
  * TARGET: MSP432P401R
  */
@@ -46,8 +46,8 @@ int main(void)
     __enable_irq(); //ENABLE INTERRUPTS
     NVIC_EnableIRQ(PORT5_IRQn); //ENABLE INTERRUPTS FOR PORT 1
 
-    left_power = 95;
-    right_power = 95;
+    left_power = 40;
+    right_power = 40;
 
     setup_motors();
     setForwards();
@@ -67,17 +67,10 @@ int main(void)
         if (enc_left >= 500 && enc_right >= 500) //takes time for the wheels to stop, period is 360 - 5
         {
             stopBoth();
-            break;
+            enc_left = 0;
+            enc_right = 0;
+            systick_wait(1000000);
         }
-        /*
-         * 20 is a crawl
-         * 40 feels good (normal speed)
-         * 60 is a jog (fast, but not insanely so)
-         * 80 is fast
-         * 95 is too fast
-         * make sure we don't go over pwm
-         *
-         */
 //
 //        if (enc_left >= 178 && enc_right >= 178)
 //        {
