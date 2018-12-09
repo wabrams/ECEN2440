@@ -1,25 +1,21 @@
 #include "motors.h"
 
-#define MOTOR_PORT P1OUT
-#define MOTOR_LEFT_BIT BIT7
-#define MOTOR_RIGHT_BIT BIT6
+void setup_encoders()
+{
+    P5SEL0 = 0x00; //CLR SEL REG0 PORT1
+    P5SEL1 = 0x00; //CLR SEL REG0 PORT1
+    P5REN  = 0x30; //ENABLE RES FOR LEFT AND RIGHT ENCODERS (P5.4, P5.5)
+    P5DIR  = 0x00; //ALL INPUTS
+    P5IES  = 0x30;
+    P5IFG  = 0x00; //CLEAR ANY INITIAL INTERRUPT FLAGS
+    P5IE   = 0x30; //ENABLE INTERRUPTS FOR LEFT AND RIGHT ENCODERS
 
-#define MOTOR_LEFT_INVERTED 0
-#define MOTOR_RIGHT_INVERTED 1
-
-#define MOTOR_LEFT_OFFSET 3
-#define MOTOR_RIGHT_OFFSET 0
-
-#define PWM_DUTY_PERIOD 200
-
-#define PWM_DUTY_PERC_SLOW 20
-#define PWM_DUTY_PERC_NORM 40
-#define PWM_DUTY_PERC_QUICK 60
-#define PWM_DUTY_PERC_FAST  80
-#define PWM_DUTY_PERC_INSANE 100
-
+    enc_left = 0;
+    enc_right = 0;
+}
 void setup_motors()
 {
+    setup_encoders();
     /*
      * TODO:
      * Better define the registers with preprocessor instructions

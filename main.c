@@ -9,9 +9,22 @@
 #include "motors.h"
 #include "timing.h"
 
-volatile int enc_left,enc_right;
 int left_power,right_power;
 
+/*
+ * PINOUT:
+ *  BUMP SWITCHES: (RIGHT TO LEFT)
+ *      P4.0 P4.2 P4.3 P4.5 P4.6 P4.7
+*          1 2 3 4 5 6
+ *  IR LINE SENSORS:
+ *      P7.0 7.1 7.2 7.3 7.4 7.5 7.6 7.7
+ *      1 2 3 4 5 6 7 8
+ *      8 IS ON THE FAR LEFT, 1 IS ON THE FAR RIGHT
+ *  IR DIST SENSORS:
+ *      5.1 is left
+ *      5.2 is right
+ *      5.0 is center
+ */
 void PORT5_IRQHandler() //port 5 interrupt handler
 {
     P5IE &= ~0x30;      //DISABLE INTERRUPTS FOR ENCODERS
@@ -31,17 +44,6 @@ int main(void)
 {
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD; //disable watchdog
 
-    enc_left = 0;
-    enc_right = 0;
-
-    P5SEL0 = 0x00; //CLR SEL REG0 PORT1
-    P5SEL1 = 0x00; //CLR SEL REG0 PORT1
-    P5REN  = 0x30; //ENABLE RES FOR LEFT AND RIGHT ENCODERS (P5.4, P5.5)
-    P5DIR  = 0x00; //ALL INPUTS
-    P5IES  = 0x30;
-    P5IFG  = 0x00; //CLEAR ANY INITIAL INTERRUPT FLAGS
-    P5IE   = 0x30; //ENABLE INTERRUPTS FOR LEFT AND RIGHT ENCODERS
-
     systick_initialize();
     __enable_irq(); //ENABLE INTERRUPTS
     NVIC_EnableIRQ(PORT5_IRQn); //ENABLE INTERRUPTS FOR PORT 1
@@ -51,47 +53,44 @@ int main(void)
 
     setup_motors();
     setForwards();
-//    setRotateRight();
     setBothPower_1(left_power,right_power);
-//    int left = 0;
-//    int i = 0;
+
     while (1)
     {
-
         if (enc_left > enc_right)
             setBothPower_1(left_power-2,right_power+2);
         else if (enc_right > enc_left)
             setBothPower_1(left_power+2,right_power-2);
         else
             setBothPower_1(left_power,right_power);
-        if (enc_left >= 500 && enc_right >= 500) //takes time for the wheels to stop, period is 360 - 5
+
+        if (enc_left >= 720 && enc_right >= 720)
         {
             stopBoth();
+            systick_wait(1000000);
             enc_left = 0;
             enc_right = 0;
-            systick_wait(1000000);
+            setRotateRight();
+            setBothPower_1(left_power,right_power);
+            while (1)
+            {
+                if (enc_left > enc_right)
+                    setBothPower_1(left_power-2,right_power+2);
+                else if (enc_right > enc_left)
+                    setBothPower_1(left_power+2,right_power-2);
+                else
+                    setBothPower_1(left_power,right_power);
+
+                if (enc_left >= 360 && enc_right >= 360)
+                {
+                    stopBoth();
+                    systick_wait(1000000);
+                    enc_left = 0;
+                    enc_right = 0;
+                    setForwards();
+                    break;
+                }
+            }
         }
-//
-//        if (enc_left >= 178 && enc_right >= 178)
-//        {
-//            stopBoth();
-//            if (left==1)
-//            {
-//                left = 0;
-//                setRotateRight();
-//            }
-//            else
-//            {
-//                left = 1;
-//                setRotateLeft();
-//            }
-//            systick_wait(1000000);
-//            enc_left = 0;
-//            enc_right = 0;
-//            i++;
-//            if (i == 1)
-//                break;
-//            setBothPower_1(left_power,right_power);
-//        }
     }
 }
