@@ -7,6 +7,7 @@ CMD_SRCS += \
 ../msp432p401r.cmd 
 
 C_SRCS += \
+../bumps.c \
 ../main.c \
 ../motors.c \
 ../startup_msp432p401r_ccs.c \
@@ -14,6 +15,7 @@ C_SRCS += \
 ../timing.c 
 
 C_DEPS += \
+./bumps.d \
 ./main.d \
 ./motors.d \
 ./startup_msp432p401r_ccs.d \
@@ -21,6 +23,7 @@ C_DEPS += \
 ./timing.d 
 
 OBJS += \
+./bumps.obj \
 ./main.obj \
 ./motors.obj \
 ./startup_msp432p401r_ccs.obj \
@@ -28,6 +31,7 @@ OBJS += \
 ./timing.obj 
 
 OBJS__QUOTED += \
+"bumps.obj" \
 "main.obj" \
 "motors.obj" \
 "startup_msp432p401r_ccs.obj" \
@@ -35,6 +39,7 @@ OBJS__QUOTED += \
 "timing.obj" 
 
 C_DEPS__QUOTED += \
+"bumps.d" \
 "main.d" \
 "motors.d" \
 "startup_msp432p401r_ccs.d" \
@@ -42,6 +47,7 @@ C_DEPS__QUOTED += \
 "timing.d" 
 
 C_SRCS__QUOTED += \
+"../bumps.c" \
 "../main.c" \
 "../motors.c" \
 "../startup_msp432p401r_ccs.c" \

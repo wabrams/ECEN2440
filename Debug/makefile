@@ -8,6 +8,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./bumps.obj" \
 "./main.obj" \
 "./motors.obj" \
 "./startup_msp432p401r_ccs.obj" \
@@ -156,8 +157,8 @@ ecen2440.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "motors.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" "timing.obj" 
-	-$(RM) "main.d" "motors.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" "timing.d" 
+	-$(RM) "bumps.obj" "main.obj" "motors.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" "timing.obj" 
+	-$(RM) "bumps.d" "main.d" "motors.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" "timing.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

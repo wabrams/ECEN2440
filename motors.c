@@ -209,7 +209,7 @@ void setBackwards()
 void setBackwards_1(int r)
 {
     setBackwards();
-    //TODO:both motor speed function
+    setBothPower(r);
 }
 void setBackwards_2(int s, int t)
 {

@@ -8,14 +8,12 @@
 #include "msp.h"
 #include "motors.h"
 #include "timing.h"
+#include "bumps.h"
 
 int left_power,right_power;
 
 /*
  * PINOUT:
- *  BUMP SWITCHES: (RIGHT TO LEFT)
- *      P4.0 P4.2 P4.3 P4.5 P4.6 P4.7
-*          1 2 3 4 5 6
  *  IR LINE SENSORS:
  *      P7.0 7.1 7.2 7.3 7.4 7.5 7.6 7.7
  *      1 2 3 4 5 6 7 8
@@ -25,6 +23,35 @@ int left_power,right_power;
  *      5.2 is right
  *      5.0 is center
  */
+void PORT4_IRQHandler()
+{
+    /*
+     * bumps.h
+     *
+     *  Created on: Dec 9, 2018
+     *      Author: Will
+     *  BUMP SWITCHES: (RIGHT TO LEFT)
+     *  P4.0 P4.2 P4.3 P4.5 P4.6 P4.7
+    *   1 2 3 4 5 6
+    *   0b 1110 1101
+    *   0x 14 13
+    *   0x ED
+     */
+    P4IE &= ~0xED;
+
+    if (P4IFG & 0xED)
+    {
+        flag_bumpswitches |= ((BUMP_SW_1 & P4IFG)?1:0) << 0;
+        flag_bumpswitches |= ((BUMP_SW_2 & P4IFG)?1:0) << 1;
+        flag_bumpswitches |= ((BUMP_SW_3 & P4IFG)?1:0) << 2;
+        flag_bumpswitches |= ((BUMP_SW_4 & P4IFG)?1:0) << 3;
+        flag_bumpswitches |= ((BUMP_SW_5 & P4IFG)?1:0) << 4;
+        flag_bumpswitches |= ((BUMP_SW_6 & P4IFG)?1:0) << 5;
+
+        P4IFG &= ~0xED;
+    }
+    P4IE |=  0xED;
+}
 void PORT5_IRQHandler() //port 5 interrupt handler
 {
     P5IE &= ~0x30;      //DISABLE INTERRUPTS FOR ENCODERS
@@ -46,25 +73,56 @@ int main(void)
 
     systick_initialize();
     __enable_irq(); //ENABLE INTERRUPTS
-    NVIC_EnableIRQ(PORT5_IRQn); //ENABLE INTERRUPTS FOR PORT 1
+    NVIC_EnableIRQ(PORT5_IRQn); //ENABLE INTERRUPTS FOR PORT 5
+    NVIC_EnableIRQ(PORT4_IRQn); //ENABLE INTERRUPTS FOR PORT 4
 
-    left_power = 40;
-    right_power = 40;
+    left_power = 30;
+    right_power = 30;
 
     setup_motors();
     setForwards();
     setBothPower_1(left_power,right_power);
 
+    P4SEL0 = 0x00; //CLR SEL REG0 PORT1
+    P4SEL1 = 0x00; //CLR SEL REG0 PORT1
+    P4DIR  = 0x00; //ALL INPUTS
+    P4REN  = 0xED;
+    P4IES  = 0x00;
+    P4IFG  = 0x00; //CLEAR ANY INITIAL INTERRUPT FLAGS
+    P4IE   = 0xED; //ENABLE INTERRUPTS FOR LEFT AND RIGHT ENCODERS
+
     while (1)
     {
+        if (flag_bumpswitches)
+        {
+            //stop
+            stopBoth();
+            systick_wait(1000000);
+            //save state
+            int temp_enc_left = enc_left;
+            int temp_enc_right = enc_right;
+            enc_left = 0;
+            enc_right = 0;
+            //backwards
+            setBackwards_1(PWM_DUTY_PERC_SLOW);
+            while (enc_left < 360 && enc_right < 360){}
+            //stop
+            stopBoth();
+            systick_wait(1000000);
+            //restore state
+            enc_left = temp_enc_left - enc_left;
+            enc_right = temp_enc_right - enc_right;
+            flag_bumpswitches = 0;
+            setForwards();
+            setBothPower_1(left_power, right_power);
+        }
         if (enc_left > enc_right)
             setBothPower_1(left_power-2,right_power+2);
         else if (enc_right > enc_left)
             setBothPower_1(left_power+2,right_power-2);
         else
             setBothPower_1(left_power,right_power);
-
-        if (enc_left >= 720 && enc_right >= 720)
+        if (enc_left >= 1440 && enc_right >= 1440)
         {
             stopBoth();
             systick_wait(1000000);
@@ -81,7 +139,7 @@ int main(void)
                 else
                     setBothPower_1(left_power,right_power);
 
-                if (enc_left >= 360 && enc_right >= 360)
+                if (enc_left >= 355 && enc_right >= 355)
                 {
                     stopBoth();
                     systick_wait(1000000);
@@ -92,5 +150,6 @@ int main(void)
                 }
             }
         }
+
     }
 }
