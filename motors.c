@@ -194,12 +194,12 @@ void setForwards()
 void setForwards_1(int r)
 {
     setForwards();
-    //TODO: both motor speed function
+    setBothPower(r);
 }
 void setForwards_2(int s, int t)
 {
     setForwards();
-    //TODO both motor speed functions
+    setBothPower_1(s, t);
 }
 void setBackwards()
 {

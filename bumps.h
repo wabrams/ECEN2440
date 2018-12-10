@@ -22,6 +22,6 @@
 #define BUMP_SW_5 BIT6
 #define BUMP_SW_6 BIT7
 
-static int flag_bumpswitches = 0b000000;
+static volatile int flag_bumpswitches = 0;
 
 #endif /* BUMPS_H_ */
