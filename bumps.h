@@ -24,4 +24,6 @@
 
 static volatile int flag_bumpswitches = 0;
 
+void setup_bumpsensors();
+
 #endif /* BUMPS_H_ */

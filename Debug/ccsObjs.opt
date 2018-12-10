@@ -1,1 +1,1 @@
-"./bumps.obj" "./main.obj" "./motors.obj" "./startup_msp432p401r_ccs.obj" "./system_msp432p401r.obj" "./timing.obj" "../msp432p401r.cmd" -llibc.a 
+"./bumps.obj" "./main.obj" "./motors.obj" "./startup_msp432p401r_ccs.obj" "./system_msp432p401r.obj" "./timing.obj" "./proj_mains/main_bumpObstacle.obj" "../msp432p401r.cmd" -llibc.a 
