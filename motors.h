@@ -27,7 +27,7 @@
 
 #define PWM_DUTY_PERIOD 200
 
-#define PWM_DUTY_PERC_SLOW 20
+#define PWM_DUTY_PERC_SLOW 80
 #define PWM_DUTY_PERC_NORM 40
 #define PWM_DUTY_PERC_QUICK 60
 #define PWM_DUTY_PERC_FAST  80
@@ -35,6 +35,7 @@
 
 static volatile int enc_left,enc_right;
 
+void setup_encoders();
 void setup_motors();
 
 void setLeftSpeed(int c);

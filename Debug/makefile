@@ -9,12 +9,14 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./bumps.obj" \
+"./linesensor.obj" \
 "./main.obj" \
 "./motors.obj" \
 "./startup_msp432p401r_ccs.obj" \
 "./system_msp432p401r.obj" \
 "./timing.obj" \
 "./proj_mains/main_bumpObstacle.obj" \
+"./proj_mains/main_encoderCounter.obj" \
 "../msp432p401r.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
@@ -160,8 +162,8 @@ ecen2440.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "bumps.obj" "main.obj" "motors.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" "timing.obj" "proj_mains/main_bumpObstacle.obj" 
-	-$(RM) "bumps.d" "main.d" "motors.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" "timing.d" "proj_mains/main_bumpObstacle.d" 
+	-$(RM) "bumps.obj" "linesensor.obj" "main.obj" "motors.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" "timing.obj" "proj_mains/main_bumpObstacle.obj" "proj_mains/main_encoderCounter.obj" 
+	-$(RM) "bumps.d" "linesensor.d" "main.d" "motors.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" "timing.d" "proj_mains/main_bumpObstacle.d" "proj_mains/main_encoderCounter.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

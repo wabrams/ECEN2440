@@ -8,6 +8,7 @@ CMD_SRCS += \
 
 C_SRCS += \
 ../bumps.c \
+../linesensor.c \
 ../main.c \
 ../motors.c \
 ../startup_msp432p401r_ccs.c \
@@ -16,6 +17,7 @@ C_SRCS += \
 
 C_DEPS += \
 ./bumps.d \
+./linesensor.d \
 ./main.d \
 ./motors.d \
 ./startup_msp432p401r_ccs.d \
@@ -24,6 +26,7 @@ C_DEPS += \
 
 OBJS += \
 ./bumps.obj \
+./linesensor.obj \
 ./main.obj \
 ./motors.obj \
 ./startup_msp432p401r_ccs.obj \
@@ -32,6 +35,7 @@ OBJS += \
 
 OBJS__QUOTED += \
 "bumps.obj" \
+"linesensor.obj" \
 "main.obj" \
 "motors.obj" \
 "startup_msp432p401r_ccs.obj" \
@@ -40,6 +44,7 @@ OBJS__QUOTED += \
 
 C_DEPS__QUOTED += \
 "bumps.d" \
+"linesensor.d" \
 "main.d" \
 "motors.d" \
 "startup_msp432p401r_ccs.d" \
@@ -48,6 +53,7 @@ C_DEPS__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../bumps.c" \
+"../linesensor.c" \
 "../main.c" \
 "../motors.c" \
 "../startup_msp432p401r_ccs.c" \

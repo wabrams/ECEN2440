@@ -19,6 +19,7 @@ main.obj: /Applications/ti/ccsv8/ccs_base/arm/include/system_msp432p401r.h
 main.obj: ../motors.h
 main.obj: ../timing.h
 main.obj: ../bumps.h
+main.obj: ../linesensor.h
 
 ../main.c: 
 /Applications/ti/ccsv8/ccs_base/arm/include/msp.h: 
@@ -39,3 +40,4 @@ main.obj: ../bumps.h
 ../motors.h: 
 ../timing.h: 
 ../bumps.h: 
+../linesensor.h: 

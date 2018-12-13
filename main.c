@@ -9,6 +9,7 @@
 #include "motors.h"
 #include "timing.h"
 #include "bumps.h"
+#include "linesensor.h"
 
 int left_power,right_power;
 
@@ -77,142 +78,32 @@ int main(void)
     NVIC_EnableIRQ(PORT5_IRQn); //ENABLE INTERRUPTS FOR PORT 5
     NVIC_EnableIRQ(PORT4_IRQn); //ENABLE INTERRUPTS FOR PORT 4
 
+    setup_motors();
+    setup_bumpsensors();
+    setup_linesensors();
+
+    systick_wait(10000000);
+    P1SEL0 &= ~0x01;
+    P1SEL1 &= ~0x01;
+    P1DIR |= 0x01;
+    P1DS |= 0x01;
+    P1OUT |= 0x01;
+    calibrate_linesensors();
+
     left_power = 30;
     right_power = 30;
+    int i = 0;
 
-    setup_bumpsensors();
-    setup_motors();
-
-    systick_wait(4000000);
-
-    //go forwards
-    setForwards_1(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 1725 && enc_right < 1725)
+    while (1)
     {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
+        read_linesensors();
+        for (i = 0; i < 8; i++)
+        {
+            if (LS[i] > -50 || LS[i] < 50)
+                LS[i] = 0;
+            else
+                LS[i] = 1;
+        }
+        systick_wait(10000);
     }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-
-    //turn right
-    setRotateRight();
-    setBothPower(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 175 && enc_right < 175)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-    //go forwards
-    setForwards_1(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 1750 && enc_right < 1750)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-    //uturn left
-    setRotateLeft();
-    setBothPower(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 365 && enc_right < 365)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-    //go forwards
-    setForwards_1(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 1725 && enc_right < 1725)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-
-    //turn left
-    setRotateLeft();
-    setBothPower(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 175 && enc_right < 175)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
-
-    //go forwards
-    setForwards_1(PWM_DUTY_PERC_SLOW);
-    while (enc_left < 1725 && enc_right < 1725)
-    {
-        if (enc_left > enc_right)
-            setBothPower_1(PWM_DUTY_PERC_SLOW-2,PWM_DUTY_PERC_SLOW+2);
-        else if (enc_right > enc_left)
-            setBothPower_1(PWM_DUTY_PERC_SLOW+2,PWM_DUTY_PERC_SLOW-2);
-        else
-            setBothPower_1(PWM_DUTY_PERC_SLOW,PWM_DUTY_PERC_SLOW);
-    }
-
-    //stop
-    stopBoth();
-    systick_wait(1000000);
-    enc_left = 0;
-    enc_right = 0;
 }
